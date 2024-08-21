@@ -1,5 +1,5 @@
 export class TimerClock {
-	private totalSecs = 0;
+	private totalSecs = 1;
 	private onOneSecDoFn!: (sec: number) => void;
 	private onTimeCompletedFn!: () => void;
 	private promiseFn!: (
@@ -13,10 +13,10 @@ export class TimerClock {
 
 	constructor() {
 		this.promiseFn = (resolve, reject) => {
-			for (let i = 0; i < this.totalSecs; i++) {
+			for (let i = 1; i < this.totalSecs + 1; i++) {
 				if (this.cancelPromise) {
 					reject(i);
-					i = this.totalSecs;
+					i = this.totalSecs + 1;
 				}
 				wait(1);
 				this.onOneSecDoFn(i);

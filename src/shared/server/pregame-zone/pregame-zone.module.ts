@@ -7,16 +7,29 @@ export class PregameZone {
 	private touchedEndedConnection!: RBXScriptConnection;
 	private timerClock: TimerClock;
 	private playersInZone: Model[] = [];
+	private billboardGui: BillboardGui;
+	private secDisplayerGUI: TextLabel;
+	private originalJumpHeight = 0;
 
-	constructor(part: BasePart, cb: (players: Model[]) => void) {
-		this.part = part;
+	constructor(model: Model, cb: (players: Model[]) => void) {
+		const zonePart = model.FindFirstChild("ZonePart") as BasePart;
+
+		this.part = zonePart;
 		this.activate();
+
+		this.billboardGui = model.FindFirstChild("BillboardGui", true) as BillboardGui;
+		this.secDisplayerGUI = this.billboardGui.FindFirstChild("SecsTextLabel") as TextLabel;
+		this.billboardGui.Enabled = false;
+		this.secDisplayerGUI.Text = "";
 		this.timerClock = new TimerClock();
 		this.timerClock.onOneSecDo((sec: number) => {
-			print("SECS: ", 15 - sec);
+			if (15 - sec > 0) {
+				this.secDisplayerGUI.Text = 15 - sec + "";
+			}
 		});
 
 		this.timerClock.onTimeCompleted(() => {
+			this.billboardGui.Enabled = false;
 			cb(this.playersInZone);
 		});
 	}
@@ -26,7 +39,12 @@ export class PregameZone {
 			if (isPlayerUpperTorso(touchedPart)) {
 				this.playersInZone.push(touchedPart.Parent as Model);
 				!this.timerClock.isTimerRunning() && this.timerClock.startTime(15);
-				print("this.playersInZone: - ", this.playersInZone);
+				this.billboardGui.Enabled = true;
+
+				const humanoid = touchedPart.Parent?.FindFirstChild("Humanoid") as Humanoid;
+
+				this.originalJumpHeight = humanoid.JumpHeight;
+				humanoid.JumpHeight = 0;
 			}
 		});
 
@@ -35,7 +53,10 @@ export class PregameZone {
 				this.playersInZone = this.playersInZone.filter((player) => player.Name !== touchedPart.Parent?.Name);
 				if (this.playersInZone.size() === 0) {
 					this.timerClock.stop();
+					this.billboardGui.Enabled = false;
 				}
+				const humanoid = touchedPart.Parent?.FindFirstChild("Humanoid") as Humanoid;
+				humanoid.JumpHeight = this.originalJumpHeight;
 			}
 		});
 	}
