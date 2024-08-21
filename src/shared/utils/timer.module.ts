@@ -13,13 +13,13 @@ export class TimerClock {
 
 	constructor() {
 		this.promiseFn = (resolve, reject) => {
-			for (let i = 1; i < this.totalSecs + 1; i++) {
+			for (let i = 0; i < this.totalSecs; i++) {
 				if (this.cancelPromise) {
 					reject(i);
-					i = this.totalSecs + 1;
+					i = this.totalSecs;
 				}
-				wait(1);
 				this.onOneSecDoFn(i);
+				wait(1);
 			}
 
 			resolve("");

@@ -1,3 +1,4 @@
+import { WAIT_PLAYERS_PREGAME } from "shared/constants.module";
 import { isPlayerUpperTorso } from "shared/utils/player-utils.module";
 import { TimerClock } from "shared/utils/timer.module";
 
@@ -9,6 +10,8 @@ export class PregameZone {
 	private playersInZone: Model[] = [];
 	private billboardGui: BillboardGui;
 	private secDisplayerGUI: TextLabel;
+	private billboardGUIToStart: BillboardGui;
+
 	private originalJumpHeight = 0;
 
 	constructor(model: Model, cb: (players: Model[]) => void) {
@@ -18,18 +21,21 @@ export class PregameZone {
 		this.activate();
 
 		this.billboardGui = model.FindFirstChild("BillboardGui", true) as BillboardGui;
+		this.billboardGUIToStart = model.FindFirstChild("BillboardToStartGui", true) as BillboardGui;
+
 		this.secDisplayerGUI = this.billboardGui.FindFirstChild("SecsTextLabel") as TextLabel;
 		this.billboardGui.Enabled = false;
 		this.secDisplayerGUI.Text = "";
+		this.billboardGUIToStart.Enabled = false;
+
 		this.timerClock = new TimerClock();
 		this.timerClock.onOneSecDo((sec: number) => {
-			if (15 - sec > 0) {
-				this.secDisplayerGUI.Text = 15 - sec + "";
-			}
+			this.secDisplayerGUI.Text = WAIT_PLAYERS_PREGAME - sec + "";
 		});
 
 		this.timerClock.onTimeCompleted(() => {
 			this.billboardGui.Enabled = false;
+			this.billboardGUIToStart.Enabled = false;
 			cb(this.playersInZone);
 		});
 	}
@@ -38,8 +44,9 @@ export class PregameZone {
 		this.touchedConnection = this.part.Touched.Connect((touchedPart: BasePart) => {
 			if (isPlayerUpperTorso(touchedPart)) {
 				this.playersInZone.push(touchedPart.Parent as Model);
-				!this.timerClock.isTimerRunning() && this.timerClock.startTime(15);
+				!this.timerClock.isTimerRunning() && this.timerClock.startTime(WAIT_PLAYERS_PREGAME);
 				this.billboardGui.Enabled = true;
+				this.billboardGUIToStart.Enabled = true;
 
 				const humanoid = touchedPart.Parent?.FindFirstChild("Humanoid") as Humanoid;
 
@@ -54,6 +61,7 @@ export class PregameZone {
 				if (this.playersInZone.size() === 0) {
 					this.timerClock.stop();
 					this.billboardGui.Enabled = false;
+					this.billboardGUIToStart.Enabled = false;
 				}
 				const humanoid = touchedPart.Parent?.FindFirstChild("Humanoid") as Humanoid;
 				humanoid.JumpHeight = this.originalJumpHeight;
