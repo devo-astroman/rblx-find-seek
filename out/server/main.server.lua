@@ -7,7 +7,11 @@ local collectionService = game:GetService("CollectionService")
 local pregameZonePartCollection = collectionService:GetTagged(PREGAME_ZONE_TAG)
 -- ▼ ReadonlyArray.forEach ▼
 local _callback = function(pregameZonePart)
-	local pregameZone = PregameZone.new(pregameZonePart)
+	local pregameZone
+	pregameZone = PregameZone.new(pregameZonePart, function(players)
+		pregameZone:dactivate()
+		print("players that will start the game ", players)
+	end)
 end
 for _k, _v in pregameZonePartCollection do
 	_callback(_v, _k - 1, pregameZonePartCollection)

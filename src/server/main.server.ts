@@ -5,7 +5,11 @@ import { PregameZone } from "shared/server/pregame-zone/pregame-zone.module";
 const collectionService = <CollectionService>game.GetService("CollectionService");
 const pregameZonePartCollection = collectionService.GetTagged(PREGAME_ZONE_TAG) as BasePart[];
 pregameZonePartCollection.forEach((pregameZonePart) => {
-	const pregameZone = new PregameZone(pregameZonePart);
+	const pregameZone = new PregameZone(pregameZonePart, (players: Model[]) => {
+		pregameZone.dactivate();
+
+		print("players that will start the game ", players);
+	});
 });
 
 const Players = game.GetService("Players");
