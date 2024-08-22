@@ -7,7 +7,7 @@ export class PrematchZone {
 	private touchedConnection!: RBXScriptConnection;
 	private touchedEndedConnection!: RBXScriptConnection;
 	private timerClock: TimerClock;
-	private playersInZone: Model[] = [];
+	private playerModelsInZone: Model[] = [];
 	private billboardGui: BillboardGui;
 	private secDisplayerGUI: TextLabel;
 	private billboardGUIToStart: BillboardGui;
@@ -15,10 +15,9 @@ export class PrematchZone {
 	private originalJumpHeight = 0;
 
 	constructor(model: Model, cb: (players: Model[]) => void) {
+		print("-PrematchZone-");
 		const zonePart = model.FindFirstChild("ZonePart") as BasePart;
-
 		this.part = zonePart;
-		this.activate();
 
 		this.billboardGui = model.FindFirstChild("BillboardGui", true) as BillboardGui;
 		this.billboardGUIToStart = model.FindFirstChild("BillboardToStartGui", true) as BillboardGui;
@@ -36,18 +35,19 @@ export class PrematchZone {
 		this.timerClock.onTimeCompleted(() => {
 			this.billboardGui.Enabled = false;
 			this.billboardGUIToStart.Enabled = false;
-			cb(this.playersInZone);
+			cb(this.playerModelsInZone);
 		});
 	}
 
 	activate() {
+		print("-PrematchZone- activate");
 		this.touchedConnection = this.part.Touched.Connect((touchedPart: BasePart) => {
 			if (isPlayerUpperTorso(touchedPart)) {
-				const playerAlreadyPushed = this.playersInZone.some(
+				const playerAlreadyPushed = this.playerModelsInZone.some(
 					(player) => player.Name === touchedPart.Parent?.Name,
 				);
 
-				!playerAlreadyPushed && this.playersInZone.push(touchedPart.Parent as Model);
+				!playerAlreadyPushed && this.playerModelsInZone.push(touchedPart.Parent as Model);
 				!this.timerClock.isTimerRunning() && this.timerClock.startTime(WAIT_PLAYERS_PREGAME);
 				this.billboardGui.Enabled = true;
 				this.billboardGUIToStart.Enabled = true;
@@ -61,8 +61,10 @@ export class PrematchZone {
 
 		this.touchedEndedConnection = this.part.TouchEnded.Connect((touchedPart: BasePart) => {
 			if (isPlayerUpperTorso(touchedPart)) {
-				this.playersInZone = this.playersInZone.filter((player) => player.Name !== touchedPart.Parent?.Name);
-				if (this.playersInZone.size() === 0) {
+				this.playerModelsInZone = this.playerModelsInZone.filter(
+					(player) => player.Name !== touchedPart.Parent?.Name,
+				);
+				if (this.playerModelsInZone.size() === 0) {
 					this.timerClock.stop();
 					this.billboardGui.Enabled = false;
 					this.billboardGUIToStart.Enabled = false;
@@ -76,5 +78,6 @@ export class PrematchZone {
 	dactivate() {
 		this.touchedConnection && this.touchedConnection.Disconnect();
 		this.touchedEndedConnection && this.touchedEndedConnection.Disconnect();
+		this.timerClock.stop();
 	}
 }

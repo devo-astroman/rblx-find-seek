@@ -3,6 +3,8 @@ import { onPlayerAdded } from "shared/server/player-server.module";
 
 import { RoomGame } from "shared/server/room-game/room-game.module";
 
+print("-Server-");
+
 const collectionService = <CollectionService>game.GetService("CollectionService");
 
 const roomGameModelCollection = collectionService.GetTagged(ROOM_GAME_TAG) as Model[];

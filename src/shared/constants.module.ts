@@ -4,5 +4,8 @@ export const PREGAME_ZONE_TAG = "PREGAME_ZONE_TAG";
 export const PLAYER_CHARACTER_TAG = "PLAYER_CHARACTER_TAG";
 export const PLAYER_UPPER_TORSO_TAG = "PLAYER_UPPER_TORSO_TAG";
 
-/* PREGAME */
-export const WAIT_PLAYERS_PREGAME = 15;
+/* PREMATCH */
+export const WAIT_PLAYERS_PREGAME = 2; // 2 for testing
+
+/* PLAYER */
+export const JUMP_HEIGHT_PLAYER = 7.2;
