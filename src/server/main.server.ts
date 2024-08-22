@@ -1,15 +1,17 @@
-import { PREGAME_ZONE_TAG } from "shared/constants.module";
+import { ROOM_GAME_TAG } from "shared/constants.module";
 import { onPlayerAdded } from "shared/server/player-server.module";
-import { PregameZone } from "shared/server/pregame-zone/pregame-zone.module";
+
+import { RoomGame } from "shared/server/room-game/room-game.module";
 
 const collectionService = <CollectionService>game.GetService("CollectionService");
-const pregameZonePartCollection = collectionService.GetTagged(PREGAME_ZONE_TAG) as Model[];
-pregameZonePartCollection.forEach((pregameZonePart) => {
-	const pregameZone = new PregameZone(pregameZonePart, (players: Model[]) => {
-		pregameZone.dactivate();
 
-		print("players that will start the game ", players);
-	});
+const roomGameModelCollection = collectionService.GetTagged(ROOM_GAME_TAG) as Model[];
+const roomGames = roomGameModelCollection.map((roomGameModel) => {
+	return new RoomGame(roomGameModel);
+});
+
+roomGames.forEach((roomGame) => {
+	roomGame.activate();
 });
 
 const Players = game.GetService("Players");

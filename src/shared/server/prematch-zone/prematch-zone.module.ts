@@ -2,7 +2,7 @@ import { WAIT_PLAYERS_PREGAME } from "shared/constants.module";
 import { isPlayerUpperTorso } from "shared/utils/player-utils.module";
 import { TimerClock } from "shared/utils/timer.module";
 
-export class PregameZone {
+export class PrematchZone {
 	private part: BasePart;
 	private touchedConnection!: RBXScriptConnection;
 	private touchedEndedConnection!: RBXScriptConnection;
@@ -43,7 +43,11 @@ export class PregameZone {
 	activate() {
 		this.touchedConnection = this.part.Touched.Connect((touchedPart: BasePart) => {
 			if (isPlayerUpperTorso(touchedPart)) {
-				this.playersInZone.push(touchedPart.Parent as Model);
+				const playerAlreadyPushed = this.playersInZone.some(
+					(player) => player.Name === touchedPart.Parent?.Name,
+				);
+
+				!playerAlreadyPushed && this.playersInZone.push(touchedPart.Parent as Model);
 				!this.timerClock.isTimerRunning() && this.timerClock.startTime(WAIT_PLAYERS_PREGAME);
 				this.billboardGui.Enabled = true;
 				this.billboardGUIToStart.Enabled = true;
