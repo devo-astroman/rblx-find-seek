@@ -1,3 +1,4 @@
+import { AttachementWelder } from "shared/utils/attachment-welder.module";
 import { MatchGame } from "../match-game/match-game.module";
 import { PrematchZone } from "../prematch-zone/prematch-zone.module";
 import { GomService } from "./services/gom-service.module";
@@ -8,6 +9,7 @@ export class RoomGame {
 	private door2: MeshPart;
 	private prematchZone: PrematchZone;
 	private matchGame!: MatchGame;
+	private attachementWelder!: AttachementWelder;
 
 	constructor(root: Model) {
 		print("-RoomGame-");

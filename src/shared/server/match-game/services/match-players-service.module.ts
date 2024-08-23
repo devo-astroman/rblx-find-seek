@@ -1,6 +1,6 @@
 import { JUMP_HEIGHT_PLAYER } from "shared/constants.module";
 
-interface PLAYER_CHARACTER {
+export interface PLAYER_CHARACTER {
 	Humanoid: Humanoid;
 }
 
@@ -20,5 +20,11 @@ export class MatchPlayerService {
 		this.playersInMatch.forEach((player) => {
 			player.Humanoid.JumpHeight = 0;
 		});
+	}
+
+	getFirstPlayerModel() {
+		if (this.playersInMatch.size() > 0) {
+			return this.playersInMatch[0];
+		}
 	}
 }
