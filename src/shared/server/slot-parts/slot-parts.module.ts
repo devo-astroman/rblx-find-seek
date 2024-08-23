@@ -25,7 +25,7 @@ export class SlotParts {
 			});
 
 			return {
-				id: i,
+				id: (part.FindFirstChild("Id") as NumberValue).Value,
 				part,
 				interactable: proximityPrompt,
 				value: SLOT_VALUE.Empty,

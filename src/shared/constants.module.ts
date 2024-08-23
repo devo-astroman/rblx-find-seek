@@ -33,3 +33,10 @@ export const SLOTS_DESK_INITIAL_VALUES = [
 	SLOT_VALUE.BLUE_BIRD,
 	SLOT_VALUE.PURPLE_BIRD,
 ];
+
+export const SLOT_VALUE_COLORS = {
+	RED_BIRD: [1, 0, 0],
+	GREEN_BIRD: [0, 1, 0],
+	BLUE_BIRD: [0, 0, 1],
+	PURPLE_BIRD: [0.502, 0, 0.502],
+};
