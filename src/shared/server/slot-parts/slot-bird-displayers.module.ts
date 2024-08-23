@@ -17,7 +17,8 @@ export class SlotBirdDisplayer {
 		});
 	}
 
-	update() {
+	update(slotData: { id: number; part: Part; interactable: ProximityPrompt; value: SLOT_VALUE }[]) {
+		this.slotData = slotData;
 		print("******"); //Change this for the birds meshes and colors
 		this.slotData.forEach((sData) => {
 			print(sData.id, " - ", this.getSlotValueText(sData.value));
@@ -36,10 +37,17 @@ export class SlotBirdDisplayer {
 			}
 
 			if (sData.value !== 0) {
+				(bird.bird.FindFirstChild("Base") as MeshPart).Transparency = 0;
+				(bird.bird.FindFirstChild("Bird") as MeshPart).Transparency = 0;
+				(bird.bird.FindFirstChild("Paws") as MeshPart).Transparency = 0;
 				const colorCode = this.getColorFromSlotValue(sData.value);
 				const color = new Color3(colorCode[0], colorCode[1], colorCode[2]);
 				const partToColor = bird.bird.FindFirstChild("Paws") as MeshPart;
 				partToColor.Color = color;
+			} else {
+				(bird.bird.FindFirstChild("Base") as MeshPart).Transparency = 1;
+				(bird.bird.FindFirstChild("Bird") as MeshPart).Transparency = 1;
+				(bird.bird.FindFirstChild("Paws") as MeshPart).Transparency = 1;
 			}
 		});
 	}
