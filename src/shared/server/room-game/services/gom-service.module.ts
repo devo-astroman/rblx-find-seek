@@ -23,9 +23,4 @@ export class GomService {
 	getPreroomModel() {
 		return this.root.PreRoom;
 	}
-
-	getReferenceDummy() {
-		const sS = game.GetService("ServerStorage");
-		return sS.FindFirstChild("ReferenceDummy") as Model;
-	}
 }
