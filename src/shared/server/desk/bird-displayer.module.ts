@@ -3,17 +3,20 @@ import { SLOT_VALUE, SLOT_VALUE_COLORS } from "shared/constants.module";
 export class BirdDisplayer {
 	constructor() {}
 
-	update(slots: SLOT_VALUE[], slotParts: Part[]) {
+	update(slotParts: Part[]) {
 		print("BirdDisplayer - update");
-		slots.forEach((slot, i) => {
-			const part = slotParts[i];
+		slotParts.forEach((slotPart) => {
+			const part = slotPart;
 			const bird = part.FindFirstChild("BirdStatue") as Model;
+			const numberValue = part.FindFirstChild("Value") as NumberValue;
 
-			if (slot === SLOT_VALUE.Empty) {
+			const slotValue = numberValue.Value;
+
+			if (slotValue === SLOT_VALUE.Empty) {
 				this.hideBird(bird);
 			} else {
 				this.showBird(bird);
-				const color = this.getColorValueFromSlotValue(slot);
+				const color = this.getColorValueFromSlotValue(slotValue);
 				this.colorBird(bird, color);
 			}
 		});
